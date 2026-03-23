@@ -92,3 +92,32 @@ do
           *) echo "Opción inválida" ;;      ## Tira error
       esac
 done
+
+
+
+#!/bin/bash
+
+if [ -z "$FILENAME" ]; then  ## Verifica si FILENAME está vacía o no existe
+   echo "ERROR: La variable de entorno FILENAME no está definida." ##Si no existe muestra este error.
+   echo "Ej: export FILENAME=consolidado" ##Ejemplo de como definir la variable
+   exit 1  ## Termina la ejecución con un código error
+fi 
+## Creo las carpetas 
+CARPETA_BASE="$HOME/EPNro1"
+CARPETA_ENTRADA="$CARPETA_BASE/entrada" ## Donde pondremos los archivos a procesar
+CARPETA_SALIDA="$CARPETA_BASE/salida"   ## Donde se va a guardar el archivo final con todo el contenido
+CARPETA_PROCESADO="$CARPETA_BASE/procesado"   ## Donde vamos a mover los archivos originales ya procesados
+
+##  Crea las carpetas si no existen
+mkdir -p  "$CARPETA_ENTRADA" "$CARPETA_SALIDA" "$CARPETA_PROCESADO"
+
+## Procesar archivos, recorriendo todos los archivos dentro de la carpeta entrada y se guardan temporalmente en la variable archivo
+
+while true; do
+ for archivo in "$CARPETA_ENTRADA"/*.txt; do
+    [ -f "$archivo" ] || continue  ## Verifica si no es una carpeta(archivo regular) y si no es un archivo salta a la sig. iteración
+    cat "$archivo" >> "$CARPETA_SALIDA/$FILENAME.txt" ## cat lee el contenido, >> lo agrega al final del archivo FILENAME  en la carpeta salida
+    mv "$archivo" "$CARPETA_PROCESADO/"  ## Mueve el archivo que acabamos de procesar a la carpeta procesado
+ done
+ sleep 5 ##Para que no se rompa el cpu 
+done
